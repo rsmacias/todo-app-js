@@ -92,3 +92,10 @@ let resetForm = () => {
     dateInput.value = "";
     textarea.value = "";
 };
+
+// Use a IIFE in order to load data from local storage
+(()=>{
+    data = JSON.parse(localStorage.getItem("data")) || [];
+    console.log(data);
+    createTasks();
+})
