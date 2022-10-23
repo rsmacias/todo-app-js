@@ -1,9 +1,12 @@
 
 let form = document.getElementById("form");
-let input = document.getElementById("input");
+let textInput = document.getElementById("textInput");
+let dateInput = document.getElementById("dateInput");
+let textarea = document.getElementById("textarea");
 let msg = document.getElementById("msg");
-let posts = document.getElementById("posts");
-let data = {};
+let tasks = document.getElementById("tasks");
+let add = document.getElementById("add");
+let data = [];
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -13,34 +16,54 @@ form.addEventListener("submit", (e) => {
 });
 
 let formValidation = () => {
-    if (!input || input.value === "") {
-        msg.innerHTML = "Post cannot be blank";
+    if (!textInput || textInput.value === "") {
+        msg.innerHTML = "Task cannot be blank";
         console.log("failure");
     } else {
         console.log("success");
         msg.innerHTML = "";
         acceptData();
+
+        add.setAttribute("data-bs-dismiss", "modal");
+        add.click();
+
+        (() => {
+            add.setAttribute("data-bs-dismiss", "");
+        })();
     }
 };
 
 // Collect data from the inputs and store in memory object
 let acceptData = () => {
-    data["text"] = input.value;
+    data.push({ 
+        text: textInput.value,
+        date: dateInput.value,
+        description: textarea.value,
+    });
     console.log(data);
-    createPost();
+
+    localStorage.setItem("data", JSON.stringify(data));
+    createTasks();
 };
 
-let createPost = () => {
-    posts.innerHTML += `
-    <div>
-        <p>${data.text}</p>
-        <span class="options">
-            <i onClick="editPost(this)" class="fas fa-edit"></i>
-            <i onClick="deletePost(this)" class="fas fa-trash-alt"></i>
-        </span>
-    </div>`;
+let createTasks = () => {
+    tasks.innerHTML = "";
+    data.map((x, index) => {
+        return (tasks.innerHTML += `
+            <div id=${index}>
+                <span class="fw-bold">${x.text}</span>
+                <span class="small text-secondary">${x.date}</span>
+                <p>${x.description}</p>
+        
+                <span class="options">
+                    <i onClick= "editTask(this)" data-bs-toggle="modal" data-bs-target="#form" class="fas fa-edit"></i>
+                    <i onClick ="deleteTask(this);createTasks()" class="fas fa-trash-alt"></i>
+                </span>
+            </div>
+        `);
+    }) 
 
-    input.value = "";
+    resetForm();
 };
 
 let deletePost = (e) => {
@@ -51,3 +74,9 @@ let editPost = (e) => {
     input.value = e.parentElement.previousElementSibling.innerHTML;
     e.parentElement.parentElement.remove();
 }
+
+let resetForm = () => {
+    textInput.value = "";
+    dateInput.value = "";
+    textarea.value = "";
+};
