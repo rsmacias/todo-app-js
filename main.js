@@ -42,3 +42,7 @@ let createPost = () => {
 
     input.value = "";
 };
+
+let deletePost = (e) => {
+    e.parentElement.parentElement.remove();
+};
