@@ -66,8 +66,15 @@ let createTasks = () => {
     resetForm();
 };
 
-let deletePost = (e) => {
+let deleteTask = (e) => {
+    // 1.- remove the HTML element from the screen
     e.parentElement.parentElement.remove();
+    // 2.- remove the task from the data array
+    data.splice(e.parentElement.parentElement.id, 1);
+    // 3.- remove the task from the local storage
+    localStorage.setItem("data", JSON.stringify(data));
+    
+    console.log(data);
 };
 
 let editPost = (e) => {
